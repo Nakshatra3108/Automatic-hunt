@@ -18,11 +18,16 @@ def backlink_identifier():
     webbrowser.open(url)
 
 class FileMovementHandler(FileSystemEventHandler):
+    processed_files = set()
+
     def on_created(self, event):
-        nm,ext=os.path.splitext(event.src_path)
-        time.sleep(1)
-        
-        if ext in ['.jpg', '.jpeg', '.png', '.gif', '.jfif']:
+        nm, ext = os.path.splitext(event.src_path)
+        if ext.lower() in ['.jpg', '.jpeg', '.png', '.gif', '.jfif']:
+            if event.src_path in self.processed_files:
+                return  # Skip already processed files
+            self.processed_files.add(event.src_path)
+            
+            time.sleep(1)
             url = 'https://aperisolve.fr/'
             webbrowser.open(url)
             time.sleep(2)
@@ -47,6 +52,7 @@ class FileMovementHandler(FileSystemEventHandler):
             time.sleep(1)
             #Decode button
             pyautogui.click(1504, 475, 1)
+            return
 
 
 
